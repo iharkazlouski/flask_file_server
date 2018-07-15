@@ -117,7 +117,7 @@ def xml_bring_names(link):
     current_count = 0
     for current_count in range(max_count):
         file = str(itemlist[current_count].childNodes[0].nodeValue)
-        print(file)
+#        print(file)
         artifact_list.append(file)
     return artifact_list
 
@@ -131,14 +131,17 @@ def get_all_folders(somelist): #  get list of all folders, based on xml
     updated = ["" if elem == "/" else elem for elem in unique]
     return updated
 
+# ['test/folder22/', 'test/folder/', 'test/directory/', '', 'test/folder21/', 'test/folder2/', 'test/']
 
-def get_files_list(somelist, dir=''): #  get all files and folders from $dir
+def get_files_list(filelist, dir=''): #  get all files and folders from $dir
     file_list = []
     dir_list = []
     my_regex = re.compile(r"%s(\w+\/)" % (dir + "/"))
 
-    for elem in somelist:
+    for elem in filelist:
         if dir in elem:
+#        if dir == elem.rpartition('/')[0]:  # !!!!!!!!!!!!!!!
+#            print("i'm here")
             if os.path.dirname(elem) == dir:
                 file_list.append(os.path.basename(elem))
             else:
@@ -162,13 +165,13 @@ def dir_or_file(somestring):
 
 
 print("---------")
-print(xml_bring_names(xml_url))
+#print(xml_bring_names(xml_url))
 print("---------")
-print(get_all_folders(test_list))
+#print(get_all_folders(test_list))
 print("---------")
-print(get_files_list(test_list, 'test')) #  probably there will be needed test/folder/
+#print(get_files_list(test_list, 'test')) #  probably there will be needed test/folder/
 print("---------")
-print(dir_or_file("something"))
+#print(dir_or_file("something"))
 print("---------")
 
 class PathView(MethodView):
@@ -179,15 +182,17 @@ class PathView(MethodView):
         files = xml_bring_names(xml_url)
 
         if path in get_all_folders(files):
+            print(get_all_folders(files))
             contents = []
             for filename in get_files_list(files, path[:-1]):
+#                print(get_files_list(files, path[:-1]))
                 info = {}
                 info['type'] = dir_or_file(filename)
                 if info['type'] == "dir":
                     info['name'] = filename[:-1]
                 else:
                     info['name'] = filename
-                print(info)
+#                print(info)
                 contents.append(info)
             page = render_template('index.html', path=p, contents=contents, hide_dotfile=hide_dotfile)
             result = make_response(page, 200)
