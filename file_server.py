@@ -138,8 +138,10 @@ def get_files_list(filelist, dir=''): #  get all files and folders from $dir
     dir_list = []
     my_regex = re.compile(r"%s(\w+\/)" % (dir + "/"))
 
+    dir_corrected = dir + "/"
+
     for elem in filelist:
-        if dir in elem:
+        if dir_corrected in elem or dir_corrected == "/":
 #        if dir == elem.rpartition('/')[0]:  # !!!!!!!!!!!!!!!
 #            print("i'm here")
             if os.path.dirname(elem) == dir:
@@ -266,4 +268,5 @@ path_view = PathView.as_view('path_view')
 app.add_url_rule('/', view_func=path_view)
 app.add_url_rule('/<path:p>', view_func=path_view)
 
-app.run('0.0.0.0', 8000, threaded=True, debug=False)
+if __name__ == "__main__":
+    app.run('0.0.0.0', 8000, threaded=True, debug=False)
